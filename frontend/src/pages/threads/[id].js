@@ -3,25 +3,19 @@ import { useRouter } from 'next/router'
 import { useState } from 'react'
 import useSWR from 'swr'
 import Layout from '../../components/layout'
+import { postResponse } from '../../libs/response'
 
 const Thread = () => {
   const router = useRouter()
   const { id } = router.query
-  const fetcher = (url) => fetch(url).then((res) => res.json())
-  const { data, mutate } = useSWR(id ? `${process.env.NEXT_PUBLIC_API_URL}/threads/${id}` : null, fetcher)
+  const { data, mutate } = useSWR(id ? `${process.env.NEXT_PUBLIC_API_URL}/threads/${id}` : null)
   const thread = data?.data
   const [response, setResponse] = useState({ name: '', email: '', content: '' })
 
   const createResponse = async (e) => {
     e.preventDefault()
     try {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/threads/${id}/responses`, {
-        method: 'POST',
-        body: JSON.stringify(response),
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      })
+      const res = await postResponse(responses[index], threadId)
       if (!res.ok) throw new Error('レスの作成に失敗しました')
       mutate()
       setResponse({ name: '', email: '', content: '' })

@@ -2,6 +2,7 @@ import Link from 'next/link'
 import { useRouter } from 'next/router'
 import { useState } from 'react'
 import Layout from '../../components/layout'
+import { postThread } from '../../libs/thread'
 
 const NewThread = () => {
   const router = useRouter()
@@ -15,13 +16,7 @@ const NewThread = () => {
   const createThread = async (e) => {
     e.preventDefault()
     try {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/threads`, {
-        method: 'POST',
-        body: JSON.stringify(thread),
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      })
+      const res = await postThread(thread)
       if (!res.ok) throw new Error('スレッドの作成に失敗しました')
       alert('スレッドを作成しました')
       router.push('/')
